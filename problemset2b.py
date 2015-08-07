@@ -2,25 +2,25 @@
 
 balance = float(raw_input("Enter the outstanding balance on your credit card: "))
 interest = float(raw_input("Enter the annual credit card interest rate as a decimal: "))
-payment = float(raw_input("Enter the minimum monthly payment rate as a decimal: "))
-print "Month: 1"
-minimum_monthly_payment = payment * balance
-print "Minimum monthly payment: $%.2f" % minimum_monthly_payment
-interest_paid = (interest / 12) * balance
-principal_paid = minimum_monthly_payment - interest_paid
-print "Principal paid: $%.2f" % principal_paid
-remaining_balance = balance - principal_paid
-print "$%d" % remaining_balance
+monthly_lowest = balance / 12.0
+monthly_interest = interest / 12.0
+monthly_upper = (balance * (1 + monthly_interest) ** 12.0) / 12.0
+lowest_balance = 0.01
 
-for i in xrange(2, 13):
-    print "Month: %s" % i
-    minimum_monthly_payment = payment * remaining_balance
-    print "Minimum monthly payment: $%.2f" % minimum_monthly_payment
-    interest_paid = (interest / 12) *remaining_balance
-    principal_paid = minimum_monthly_payment - interest_paid
-    print "Principal paid: $%.2f" % principal_paid
-    remaining_balance = remaining_balance - principal_paid
-    print "$%.2f" % remaining_balance
-    i += 1
-   
+while balance > lowest_balance:
 
+	payment = (monthly_upper - monthly_lowest) / 2 + monthly_lowest
+
+	for month in xrange(12):
+		balance -= payment
+		balance *= monthly_interest
+
+		if balance > 0:
+			monthly_lowest = payment
+
+		else:
+			monthly_upper = payment
+
+	print "Monthly Payment to pay off debt in 1 year: %.2f" % payment
+	print "Number of months needed: " month
+	print "Balance: %.2f" % balance 
